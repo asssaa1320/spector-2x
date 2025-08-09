@@ -1,0 +1,87 @@
+<!DOCTYPE html>
+<html lang="en" dir="ltr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Zeus Coupon - Get Your Exclusive Discount</title>
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+    <div class="container">
+        <div class="hero-section">
+            <div class="hero-content">
+                <div class="logo">
+                    <i class="fas fa-bolt"></i>
+                    <span>ZEUS</span>
+                </div>
+                
+                <h1 class="hero-title" data-translate="hero.title">Get Your Exclusive Coupon</h1>
+                <p class="hero-subtitle" data-translate="hero.subtitle">Limited time offer - Download your discount coupon now!</p>
+                
+                <div class="coupon-card">
+                    <div class="coupon-header">
+                        <h2 data-translate="coupon.title">SPECIAL DISCOUNT</h2>
+                        <div class="discount-badge">
+                            <span class="discount-percent">50%</span>
+                            <span class="discount-text" data-translate="coupon.off">OFF</span>
+                        </div>
+                    </div>
+                    
+                    <div class="coupon-body">
+                        <p class="coupon-description" data-translate="coupon.description">
+                            Valid for all products and services. Don't miss this amazing opportunity!
+                        </p>
+                        
+                        <div class="coupon-code">
+                            <span class="code-label" data-translate="coupon.code">Code:</span>
+                            <span class="code-value">ZEUS50</span>
+                        </div>
+                        
+                        <button class="download-btn" id="downloadBtn">
+                            <i class="fas fa-download"></i>
+                            <span data-translate="coupon.button">Get Coupon Now</span>
+                        </button>
+                    </div>
+                </div>
+                
+                <div class="features">
+                    <div class="feature">
+                        <i class="fas fa-clock"></i>
+                        <span data-translate="features.limited">Limited Time</span>
+                    </div>
+                    <div class="feature">
+                        <i class="fas fa-shield-alt"></i>
+                        <span data-translate="features.secure">100% Secure</span>
+                    </div>
+                    <div class="feature">
+                        <i class="fas fa-gift"></i>
+                        <span data-translate="features.instant">Instant Download</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+        <div class="trust-badge">
+            <i class="fas fa-shield-check"></i>
+            <span data-translate="trust.secure">100% Secure</span>
+        </div>
+    </div>
+    
+    <div class="loading-overlay" id="loadingOverlay">
+        <div class="loading-spinner">
+            <i class="fas fa-spinner fa-spin"></i>
+            <p data-translate="loading">Preparing your coupon...</p>
+        </div>
+    </div>
+
+    <!-- Firebase Scripts -->
+    <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-app-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-firestore-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-auth-compat.js"></script>
+    
+    <script src="translations.js"></script>
+    <script src="app.js"></script>
+</body>
+</html>

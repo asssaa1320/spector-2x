@@ -1,0 +1,21 @@
+{
+  "name": "zeus-coupon-website",
+  "version": "1.0.0",
+  "description": "Firebase-integrated coupon website with user tracking and admin panel",
+  "main": "server.js",
+  "scripts": {
+    "start": "node server.js",
+    "dev": "node server.js"
+  },
+  "dependencies": {
+    "express": "^4.18.2"
+  },
+  "keywords": [
+    "coupon",
+    "firebase",
+    "tracking",
+    "admin"
+  ],
+  "author": "Zeus Team",
+  "license": "MIT"
+}

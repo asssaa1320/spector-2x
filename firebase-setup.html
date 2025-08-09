@@ -1,0 +1,255 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Firebase Setup & Test</title>
+    <script src="https://www.gstatic.com/firebasejs/9.0.0/firebase-app-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/9.0.0/firebase-firestore-compat.js"></script>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            max-width: 800px;
+            margin: 0 auto;
+            padding: 20px;
+            background: #f5f5f5;
+        }
+        .container {
+            background: white;
+            padding: 30px;
+            border-radius: 10px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+        }
+        .section {
+            margin: 20px 0;
+            padding: 15px;
+            border: 1px solid #ddd;
+            border-radius: 5px;
+        }
+        .success { background: #d4edda; border-color: #c3e6cb; color: #155724; }
+        .error { background: #f8d7da; border-color: #f5c6cb; color: #721c24; }
+        .info { background: #d1ecf1; border-color: #bee5eb; color: #0c5460; }
+        button {
+            background: #ff6b35;
+            color: white;
+            border: none;
+            padding: 10px 20px;
+            border-radius: 5px;
+            cursor: pointer;
+            margin: 5px;
+        }
+        button:hover { background: #e55a2b; }
+        pre { background: #f8f9fa; padding: 10px; border-radius: 3px; overflow-x: auto; }
+        .log { height: 300px; overflow-y: auto; background: #000; color: #0f0; padding: 10px; font-family: monospace; }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>🔥 Firebase Setup & Testing Tool</h1>
+        
+        <div class="section info">
+            <h3>📋 Required Firestore Structure:</h3>
+            <pre>
+Collections needed:
+├── user-visits (auto-created)
+├── user-downloads (auto-created)  
+└── admin-zues-oun
+    └── credentials (document)
+        ├── username: "admin"
+        └── password: "your_password"
+            </pre>
+        </div>
+
+        <div class="section">
+            <h3>🧪 Firebase Tests:</h3>
+            <button onclick="testConnection()">Test Connection</button>
+            <button onclick="testWrite()">Test Write Permission</button>
+            <button onclick="createAdminCredentials()">Create Admin Credentials</button>
+            <button onclick="testUserVisit()">Test User Visit Log</button>
+            <button onclick="clearLog()">Clear Log</button>
+        </div>
+
+        <div class="section">
+            <h3>📊 Required Firestore Security Rules:</h3>
+            <pre>
+rules_version = '2';
+service cloud.firestore {
+  match /databases/{database}/documents {
+    match /user-visits/{document} {
+      allow read, write: if true;
+    }
+    match /user-downloads/{document} {
+      allow read, write: if true;
+    }
+    match /admin-zues-oun/{document} {
+      allow read: if true;
+      allow write: if true;
+    }
+  }
+}
+            </pre>
+        </div>
+
+        <div class="section">
+            <h3>📝 Console Log:</h3>
+            <div id="log" class="log"></div>
+        </div>
+    </div>
+
+    <script>
+        // Firebase Configuration
+        const firebaseConfig = {
+            apiKey: "AIzaSyChp9qtcOf5Jeu9pnm_dOd6yY3XbU_5m4A",
+            authDomain: "zues-dc021.firebaseapp.com",
+            projectId: "zues-dc021",
+            storageBucket: "zues-dc021.firebasestorage.app",
+            messagingSenderId: "639820467835",
+            appId: "1:639820467835:web:8b2b35e333f83eb71f9cde",
+            measurementId: "G-GK6PT78151"
+        };
+
+        let db;
+        
+        // Initialize Firebase
+        try {
+            firebase.initializeApp(firebaseConfig);
+            db = firebase.firestore();
+            log('✅ Firebase initialized successfully');
+        } catch (error) {
+            log('❌ Firebase initialization failed: ' + error.message);
+        }
+
+        function log(message) {
+            const logDiv = document.getElementById('log');
+            const timestamp = new Date().toLocaleTimeString();
+            logDiv.innerHTML += `[${timestamp}] ${message}\n`;
+            logDiv.scrollTop = logDiv.scrollHeight;
+            console.log(message);
+        }
+
+        function clearLog() {
+            document.getElementById('log').innerHTML = '';
+        }
+
+        async function testConnection() {
+            log('🔍 Testing Firebase connection...');
+            try {
+                if (!db) {
+                    log('❌ Database not initialized');
+                    return;
+                }
+                
+                const testCollection = db.collection('user-visits');
+                log('✅ Can access user-visits collection');
+                
+                // Try to get collection metadata
+                const snapshot = await testCollection.limit(1).get();
+                log(`✅ Collection accessible, contains ${snapshot.size} documents`);
+                
+            } catch (error) {
+                log('❌ Connection test failed: ' + error.message);
+                log('❌ Error code: ' + error.code);
+            }
+        }
+
+        async function testWrite() {
+            log('📝 Testing write permissions...');
+            try {
+                const testDoc = {
+                    test: true,
+                    timestamp: firebase.firestore.Timestamp.fromDate(new Date()),
+                    message: 'Write permission test',
+                    created: new Date().toISOString()
+                };
+                
+                const docRef = await db.collection('user-visits').add(testDoc);
+                log('✅ Write test successful! Document ID: ' + docRef.id);
+                
+                // Clean up
+                await docRef.delete();
+                log('✅ Test document cleaned up');
+                
+            } catch (error) {
+                log('❌ Write test failed: ' + error.message);
+                log('❌ Error code: ' + error.code);
+                
+                if (error.code === 'permission-denied') {
+                    log('🚫 PERMISSION DENIED: Update Firestore Security Rules!');
+                }
+            }
+        }
+
+        async function createAdminCredentials() {
+            log('👤 Creating admin credentials...');
+            try {
+                const credentials = {
+                    username: 'admin',
+                    password: 'zues2025!', // Change this to your desired password
+                    created: new Date().toISOString(),
+                    role: 'administrator'
+                };
+                
+                await db.collection('admin-zues-oun').doc('credentials').set(credentials);
+                log('✅ Admin credentials created successfully!');
+                log('📋 Username: admin');
+                log('📋 Password: zues2025!');
+                
+            } catch (error) {
+                log('❌ Failed to create admin credentials: ' + error.message);
+                log('❌ Error code: ' + error.code);
+            }
+        }
+
+        async function testUserVisit() {
+            log('👤 Testing user visit logging...');
+            try {
+                const visitData = {
+                    language: navigator.language || 'en-US',
+                    location: 'Test Location, Test Country',
+                    platform: navigator.platform || 'Unknown',
+                    screenResolution: `${screen.width}x${screen.height}`,
+                    timestamp: firebase.firestore.Timestamp.fromDate(new Date()),
+                    timezone: Intl.DateTimeFormat().resolvedOptions().timeZone || 'UTC',
+                    userAgent: navigator.userAgent.substring(0, 100) + '...',
+                    coordinates: '0,0',
+                    sessionId: 'test_session_' + Date.now(),
+                    pageUrl: window.location.href,
+                    createdAt: new Date().toISOString(),
+                    version: '1.0',
+                    testData: true
+                };
+                
+                log('📊 Visit data prepared:');
+                log('  Language: ' + visitData.language);
+                log('  Platform: ' + visitData.platform);
+                log('  Screen: ' + visitData.screenResolution);
+                log('  Timezone: ' + visitData.timezone);
+                
+                const docRef = await db.collection('user-visits').add(visitData);
+                log('✅ User visit logged successfully! Document ID: ' + docRef.id);
+                
+                // Verify the data was saved
+                const savedDoc = await docRef.get();
+                if (savedDoc.exists) {
+                    log('✅ Data verification successful');
+                    const data = savedDoc.data();
+                    log('📋 Saved language: ' + data.language);
+                    log('📋 Saved location: ' + data.location);
+                    log('📋 Saved platform: ' + data.platform);
+                } else {
+                    log('❌ Data verification failed');
+                }
+                
+            } catch (error) {
+                log('❌ User visit test failed: ' + error.message);
+                log('❌ Error code: ' + error.code);
+            }
+        }
+
+        // Auto-run connection test on page load
+        window.addEventListener('load', function() {
+            setTimeout(testConnection, 1000);
+        });
+    </script>
+</body>
+</html>
