@@ -36,9 +36,8 @@ The website connects to Firebase with the following services:
 
 ## Admin Credentials
 
-- **Username**: `admin-zues-oun`
-- **Password**: `admin-zues-password`
-- **Access URL**: `http://localhost:3000/admin-zues-dev`
+- **Username**: 
+- **Password**: 
 
 ## Installation & Setup
 
